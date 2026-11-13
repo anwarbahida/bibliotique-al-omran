@@ -4,7 +4,7 @@ import PriceCompletionPanel from './components/PriceCompletionPanel'
 import ProductForm from './components/ProductForm'
 import ProductsPanel from './components/ProductsPanel'
 import ToastStack from './components/ToastStack'
-import { APP_NAME, formatMoney } from './config'
+import { APP_NAME } from './config'
 import useProducts from './hooks/useProducts'
 import { createId, hasPrice } from './lib/format'
 import { deleteProduct, describeDataError, storageMode } from './lib/products'
@@ -47,31 +47,14 @@ export default function App() {
     setToasts((previous) => previous.filter((toast) => toast.id !== id))
   }, [])
 
-  const categories = useMemo(() => {
-    const unique = new Map()
-    products.forEach((product) => {
-      const value = (product.category || '').trim()
-      if (value) unique.set(value.toLowerCase(), value)
-    })
-    return [...unique.values()].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }))
-  }, [products])
-
   const stats = useMemo(() => {
-    let stockValue = 0
     let pendingCount = 0
 
     products.forEach((product) => {
-      if (!hasPrice(product.price)) {
-        pendingCount += 1
-        return
-      }
-
-      const quantity = Number(product.quantity) || 0
-      const price = Number(product.price) || 0
-      stockValue += price * quantity
+      if (!hasPrice(product.price)) pendingCount += 1
     })
 
-    return { count: products.length, pendingCount, stockValue }
+    return { count: products.length, pendingCount }
   }, [products])
 
   const handleEdit = useCallback((product) => {
@@ -152,15 +135,6 @@ export default function App() {
                 </span>
               </button>
 
-              <div className="stat-chip" title={formatMoney(stats.stockValue)}>
-                <span className="stat-icon" aria-hidden="true">
-                  <i className="bi bi-cash-coin"></i>
-                </span>
-                <span className="min-w-0">
-                  <span className="stat-value d-block text-truncate">{formatMoney(stats.stockValue)}</span>
-                  <span className="stat-label d-block">Valeur du stock</span>
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -228,7 +202,6 @@ export default function App() {
               <ProductForm
                 key={editingProduct?.id || 'new'}
                 editingProduct={editingProduct}
-                categories={categories}
                 notify={notify}
                 onCancelEdit={handleCancelEdit}
               />

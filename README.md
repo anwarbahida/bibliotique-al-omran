@@ -93,7 +93,7 @@ La collection est créée automatiquement au premier ajout de produit.
 
 | Rôle | Onglet | Actions |
 | --- | --- | --- |
-| Saisie (photos) | **Saisie & inventaire** | Ajoute la photo, le nom s’il est connu, la catégorie, la quantité et la description. **Aucun prix demandé.** |
+| Saisie (photos) | **Saisie & inventaire** | Ajoute la photo et le nom s’il est connu. **Aucun prix demandé.** |
 | Complétion (prix) | **Prix à compléter** | Voit les produits sans prix, saisit le prix en face de la photo et ajoute le nom s’il manque. |
 
 - Le nom est **facultatif** à la saisie : laissez-le vide s’il est inconnu.
@@ -114,15 +114,14 @@ La collection est créée automatiquement au premier ajout de produit.
 - Import depuis la galerie et glisser-déposer sur ordinateur.
 - Compression automatique des images (max. 1000 px, JPEG optimisé) pour respecter
   la limite de 1 Mo par document Firestore.
-- Formulaire de saisie : nom (facultatif), quantité, catégorie (avec suggestions),
-  description et photo — **sans prix**.
+- Formulaire de saisie : photo et nom (facultatif) — **sans prix**.
 - Onglet **Prix à compléter** : saisie du prix en face de chaque photo, ajout du nom
   manquant, filtre « À compléter / Tous ».
 - Inventaire en temps réel grâce à `onSnapshot`.
 - Tableau sur ordinateur, cartes sur mobile (100 % responsive).
-- Recherche, filtre par catégorie, tri (récents, nom, prix, stock).
+- Recherche par nom et tri (récents, nom, prix).
 - Modification et suppression avec confirmation.
-- Statistiques : nombre de produits, **produits à compléter**, valeur du stock.
+- Statistiques : nombre de produits et **produits à compléter**.
 - Notifications, états de chargement et messages d’erreur explicites.
 - Mode démo `localStorage` si Firebase n’est pas configuré.
 
@@ -147,7 +146,6 @@ src/
 │   ├── ConfirmDeleteModal.jsx
 │   ├── ToastStack.jsx
 │   ├── Modal.jsx
-│   ├── StockBadge.jsx
 │   └── ProductThumb.jsx
 ├── hooks/
 │   ├── useProducts.js            # Abonnement Firestore / local
@@ -165,10 +163,7 @@ Collection `products` (le prix vaut `null` tant qu’il n’a pas été complét
 ```js
 {
   name: "Roman « Les Misérables »", // peut être ""
-  category: "Livres",
-  price: null,                       // devient un nombre après complétion
-  quantity: 3,
-  description: "Édition brochée",
+  price: null,                      // devient un nombre après complétion
   photo: "data:image/jpeg;base64,...",
   createdAt: Timestamp,
   updatedAt: Timestamp

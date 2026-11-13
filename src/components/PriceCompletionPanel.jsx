@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { CURRENCY } from '../config'
-import { hasPrice, toDate } from '../lib/format'
+import { formatDate, hasPrice, toDate } from '../lib/format'
 import { describeDataError, updateProduct } from '../lib/products'
 import ProductThumb from './ProductThumb'
 
@@ -78,9 +78,7 @@ function PriceItem({ product, notify }) {
         )}
 
         <div className="price-item-meta">
-          <span>{product.category || 'Sans catégorie'}</span>
-          <span aria-hidden="true">·</span>
-          <span>{Number(product.quantity) || 0} en stock</span>
+          <span>Ajouté le {formatDate(product.createdAt)}</span>
           {priced && (
             <span className="price-state">
               <i className="bi bi-check2-circle" aria-hidden="true"></i>
@@ -88,10 +86,6 @@ function PriceItem({ product, notify }) {
             </span>
           )}
         </div>
-
-        {product.description && (
-          <p className="small text-muted clamp-2 mb-0 mt-1">{product.description}</p>
-        )}
       </div>
 
       <form className="price-item-form" onSubmit={handleSubmit} noValidate>

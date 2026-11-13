@@ -10,7 +10,6 @@ const SORT_OPTIONS = [
   { value: 'name', label: 'Nom (A → Z)' },
   { value: 'price-desc', label: 'Prix décroissant' },
   { value: 'price-asc', label: 'Prix croissant' },
-  { value: 'stock-asc', label: 'Stock faible' },
 ]
 
 function EmptyState({ hasProducts, onReset }) {
@@ -62,10 +61,6 @@ function sortProducts(products, sort) {
       return priceA - priceB
     })
   }
-  if (sort === 'stock-asc') {
-    return sorted.sort((a, b) => (Number(a.quantity) || 0) - (Number(b.quantity) || 0))
-  }
-
   return sorted.sort((a, b) => {
     const timeA = toDate(a.createdAt)?.getTime() || 0
     const timeB = toDate(b.createdAt)?.getTime() || 0
@@ -75,37 +70,22 @@ function sortProducts(products, sort) {
 
 export default function ProductsPanel({ products, loading, error, onEdit, onDelete }) {
   const [search, setSearch] = useState('')
-  const [category, setCategory] = useState('')
   const [sort, setSort] = useState('recent')
   const isDesktop = useMediaQuery('(min-width: 992px)')
 
-  const categories = useMemo(() => {
-    const unique = new Map()
-    products.forEach((product) => {
-      const value = (product.category || '').trim()
-      if (value) unique.set(normalizeText(value), value)
-    })
-    return [...unique.values()].sort((a, b) => a.localeCompare(b, 'fr', { sensitivity: 'base' }))
-  }, [products])
-
   const filteredProducts = useMemo(() => {
     const term = normalizeText(search.trim())
-    const selectedCategory = normalizeText(category)
 
     const filtered = products.filter((product) => {
-      if (selectedCategory && normalizeText((product.category || '').trim()) !== selectedCategory) {
-        return false
-      }
       if (!term) return true
-      return normalizeText(`${product.name || ''} ${product.category || ''} ${product.description || ''}`).includes(term)
+      return normalizeText(product.name || '').includes(term)
     })
 
     return sortProducts(filtered, sort)
-  }, [products, search, category, sort])
+  }, [products, search, sort])
 
   function resetFilters() {
     setSearch('')
-    setCategory('')
     setSort('recent')
   }
 
@@ -133,7 +113,7 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
       </div>
 
       <div className="row g-2 mb-3">
-        <div className="col-12 col-md-6">
+        <div className="col-12 col-md-8">
           <div className="search-field">
             <i className="bi bi-search search-icon" aria-hidden="true"></i>
             <input
@@ -157,21 +137,7 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
           </div>
         </div>
 
-        <div className="col-6 col-md-3">
-          <select
-            className="form-select"
-            aria-label="Filtrer par catégorie"
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-          >
-            <option value="">Toutes catégories</option>
-            {categories.map((item) => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="col-6 col-md-3">
+        <div className="col-12 col-md-4">
           <select
             className="form-select"
             aria-label="Trier les produits"

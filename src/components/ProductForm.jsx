@@ -5,9 +5,6 @@ import { addProduct, describeDataError, updateProduct } from '../lib/products'
 
 const EMPTY_FORM = {
   name: '',
-  category: '',
-  quantity: '',
-  description: '',
 }
 
 function getInitialForm(product) {
@@ -15,21 +12,16 @@ function getInitialForm(product) {
 
   return {
     name: product.name || '',
-    category: product.category || '',
-    quantity:
-      product.quantity === undefined || product.quantity === null ? '' : String(product.quantity),
-    description: product.description || '',
   }
 }
 
-export default function ProductForm({ editingProduct, categories, notify, onCancelEdit }) {
+export default function ProductForm({ editingProduct, notify, onCancelEdit }) {
   const [form, setForm] = useState(() => getInitialForm(editingProduct))
   const [photo, setPhoto] = useState(() => editingProduct?.photo || '')
   const [photoBusy, setPhotoBusy] = useState(false)
   const [photoError, setPhotoError] = useState('')
   const [cameraOpen, setCameraOpen] = useState(false)
   const [dragging, setDragging] = useState(false)
-  const [errors, setErrors] = useState({})
   const [saving, setSaving] = useState(false)
 
   const fileInputRef = useRef(null)
@@ -38,7 +30,6 @@ export default function ProductForm({ editingProduct, categories, notify, onCanc
   function handleChange(event) {
     const { name, value } = event.target
     setForm((previous) => ({ ...previous, [name]: value }))
-    if (errors[name]) setErrors((previous) => ({ ...previous, [name]: '' }))
   }
 
   async function processFile(file) {
@@ -84,7 +75,6 @@ export default function ProductForm({ editingProduct, categories, notify, onCanc
   function handleCancel() {
     setForm(EMPTY_FORM)
     setPhoto('')
-    setErrors({})
     setPhotoError('')
     onCancelEdit()
   }
@@ -92,24 +82,8 @@ export default function ProductForm({ editingProduct, categories, notify, onCanc
   async function handleSubmit(event) {
     event.preventDefault()
 
-    const nextErrors = {}
-    const name = form.name.trim()
-    const quantity = form.quantity === '' ? 0 : Number(form.quantity)
-
-    if (!Number.isInteger(quantity) || quantity < 0) {
-      nextErrors.quantity = 'Entrez une quantité entière (0 ou plus).'
-    }
-
-    if (Object.keys(nextErrors).length) {
-      setErrors(nextErrors)
-      return
-    }
-
     const payload = {
-      name,
-      category: form.category.trim(),
-      quantity,
-      description: form.description.trim(),
+      name: form.name.trim(),
       photo: photo || null,
     }
 
@@ -127,7 +101,6 @@ export default function ProductForm({ editingProduct, categories, notify, onCanc
 
       setForm(EMPTY_FORM)
       setPhoto('')
-      setErrors({})
       setPhotoError('')
     } catch (error) {
       notify(describeDataError(error), 'danger')
@@ -272,69 +245,6 @@ export default function ProductForm({ editingProduct, categories, notify, onCanc
           <div className="form-text">
             Laissez vide si vous ne connaissez pas le nom : il pourra être complété avec le prix.
           </div>
-        </div>
-
-        <div className="row g-3 mt-0">
-          <div className="col-4">
-            <label className="form-label" htmlFor="product-quantity">
-              Quantité
-            </label>
-            <input
-              id="product-quantity"
-              name="quantity"
-              type="number"
-              className={`form-control ${errors.quantity ? 'is-invalid' : ''}`}
-              placeholder="0"
-              value={form.quantity}
-              onChange={handleChange}
-              min="0"
-              step="1"
-              inputMode="numeric"
-            />
-            {errors.quantity && <div className="invalid-feedback">{errors.quantity}</div>}
-          </div>
-
-          <div className="col-8">
-            <label className="form-label" htmlFor="product-category">
-              Catégorie
-            </label>
-            <input
-              id="product-category"
-              name="category"
-              type="text"
-              className="form-control"
-              placeholder="Ex. Livres, Papeterie, Accessoires…"
-              value={form.category}
-              onChange={handleChange}
-              maxLength={40}
-              list="category-options"
-              autoComplete="off"
-            />
-            <datalist id="category-options">
-              {categories.map((category) => (
-                <option key={category} value={category} />
-              ))}
-            </datalist>
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <div className="d-flex align-items-center justify-content-between">
-            <label className="form-label mb-1" htmlFor="product-description">
-              Description
-            </label>
-            <span className="form-text">{form.description.length}/500</span>
-          </div>
-          <textarea
-            id="product-description"
-            name="description"
-            className="form-control"
-            rows="3"
-            placeholder="Détails, référence, état du produit…"
-            value={form.description}
-            onChange={handleChange}
-            maxLength={500}
-          ></textarea>
         </div>
 
         <div className="d-grid gap-2 mt-4">

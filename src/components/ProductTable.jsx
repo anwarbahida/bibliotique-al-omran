@@ -1,7 +1,6 @@
 import { formatDate } from '../lib/format'
 import PriceLabel from './PriceLabel'
 import ProductThumb from './ProductThumb'
-import StockBadge from './StockBadge'
 
 export default function ProductTable({ products, onEdit, onDelete }) {
   return (
@@ -11,7 +10,6 @@ export default function ProductTable({ products, onEdit, onDelete }) {
           <tr>
             <th scope="col">Produit</th>
             <th scope="col" className="text-end">Prix</th>
-            <th scope="col" className="text-center">Stock</th>
             <th scope="col">Ajouté</th>
             <th scope="col" className="text-end">Actions</th>
           </tr>
@@ -22,24 +20,16 @@ export default function ProductTable({ products, onEdit, onDelete }) {
               <td>
                 <div className="d-flex align-items-center gap-3">
                   <ProductThumb product={product} alt="" />
-                  <div className="min-w-0">
-                    <div
-                      className={`product-name text-truncate ${product.name ? '' : 'product-name-empty'}`}
-                      title={product.name || 'Sans nom'}
-                    >
-                      {product.name || 'Sans nom'}
-                    </div>
-                    <div className="product-meta text-truncate">
-                      {product.category || 'Sans catégorie'}
-                    </div>
+                  <div
+                    className={`product-name min-w-0 text-truncate ${product.name ? '' : 'product-name-empty'}`}
+                    title={product.name || 'Sans nom'}
+                  >
+                    {product.name || 'Sans nom'}
                   </div>
                 </div>
               </td>
               <td className="text-end fw-semibold text-nowrap">
                 <PriceLabel value={product.price} />
-              </td>
-              <td className="text-center">
-                <StockBadge quantity={product.quantity} />
               </td>
               <td className="text-muted small text-nowrap">{formatDate(product.createdAt)}</td>
               <td className="text-end text-nowrap">
