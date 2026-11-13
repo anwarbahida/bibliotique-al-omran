@@ -25,7 +25,8 @@ function PriceItem({ product, notify }) {
     }
 
     const trimmedName = name.trim()
-    const updates = { price: parsedPrice }
+    const cleared = parsedPrice === 0
+    const updates = { price: cleared ? null : parsedPrice }
     if (nameMissing && trimmedName) updates.name = trimmedName
 
     setSaving(true)
@@ -33,12 +34,17 @@ function PriceItem({ product, notify }) {
 
     try {
       await updateProduct(product.id, updates)
-      notify(
-        priced
-          ? 'Prix mis à jour.'
-          : `Prix enregistré${trimmedName ? ` pour « ${trimmedName} »` : ''}.`,
-        'success',
-      )
+      if (cleared) {
+        setPrice('')
+        notify('Prix retiré — le produit est remis à compléter.', 'success')
+      } else {
+        notify(
+          priced
+            ? 'Prix mis à jour.'
+            : `Prix enregistré${trimmedName ? ` pour « ${trimmedName} »` : ''}.`,
+          'success',
+        )
+      }
     } catch (saveError) {
       const message = describeDataError(saveError)
       setError(message)
@@ -132,6 +138,7 @@ function PriceItem({ product, notify }) {
             {CURRENCY && <span className="input-group-text">{CURRENCY}</span>}
           </div>
           {error && <div className="invalid-feedback d-block">{error}</div>}
+          <div className="form-text">Saisissez 0 pour remettre le produit à compléter.</div>
         </div>
 
         <button type="submit" className="btn btn-primary price-save" disabled={saving}>

@@ -101,6 +101,7 @@ La collection est créée automatiquement au premier ajout de produit.
 - L’onglet **Prix à compléter** est accessible directement via l’URL `/#prix`
   (pratique pour l’envoyer à votre collègue).
 - Une fois le prix enregistré, le produit disparaît de la liste « À compléter ».
+- Saisir **0** comme prix retire le tarif et remet le produit dans « À compléter ».
 - L’onglet **Tous** permet de corriger un prix ou de compléter un nom plus tard.
 - Pour partager les données entre deux appareils, **Firestore est obligatoire**
   (le mode démo reste limité au navigateur local).

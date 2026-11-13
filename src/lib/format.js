@@ -25,7 +25,9 @@ export function formatDate(value) {
 }
 
 export function hasPrice(value) {
-  return value !== null && value !== undefined && value !== ''
+  if (value === null || value === undefined || value === '') return false
+  const number = Number(value)
+  return Number.isFinite(number) && number > 0
 }
 
 export function normalizeText(value) {
