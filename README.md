@@ -117,6 +117,8 @@ La collection est créée automatiquement au premier ajout de produit.
 - Formulaire de saisie : photo et nom (facultatif) — **sans prix**.
 - Onglet **Prix à compléter** : saisie du prix en face de chaque photo, ajout du nom
   manquant, filtre « À compléter / Tous ».
+- Clic sur la photo dans l’onglet des prix : affichage **en plein écran** pour mieux
+  identifier le produit (fermeture par la croix, `Échap` ou clic à l’extérieur).
 - Inventaire en temps réel grâce à `onSnapshot`.
 - Tableau sur ordinateur, cartes sur mobile (100 % responsive).
 - Recherche par nom et tri (récents, nom, prix).
@@ -139,6 +141,7 @@ src/
 │   ├── ProductForm.jsx           # Saisie photo + informations (sans prix)
 │   ├── CameraModal.jsx           # Webcam / caméra en direct
 │   ├── PriceCompletionPanel.jsx  # Onglet de complétion des prix
+│   ├── PhotoLightbox.jsx         # Affichage de la photo en plein écran
 │   ├── ProductsPanel.jsx         # Recherche, filtres, inventaire
 │   ├── ProductTable.jsx          # Vue tableau (desktop)
 │   ├── ProductCard.jsx           # Vue cartes (mobile)

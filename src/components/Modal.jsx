@@ -1,7 +1,16 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useRef } from 'react'
 
-export default function Modal({ open, onClose, children, size = 'md', labelledBy, closeOnBackdrop = true }) {
+export default function Modal({
+  open,
+  onClose,
+  children,
+  size = 'md',
+  labelledBy,
+  closeOnBackdrop = true,
+  dialogClassName = '',
+  contentClassName = '',
+}) {
   const onCloseRef = useRef(onClose)
 
   useEffect(() => {
@@ -37,8 +46,8 @@ export default function Modal({ open, onClose, children, size = 'md', labelledBy
         if (closeOnBackdrop && event.target === event.currentTarget) onCloseRef.current?.()
       }}
     >
-      <div className={`modal-dialog modal-dialog-centered modal-${size}`}>
-        <div className="modal-content border-0 shadow-lg">{children}</div>
+      <div className={`modal-dialog modal-dialog-centered modal-${size} ${dialogClassName}`}>
+        <div className={`modal-content border-0 shadow-lg ${contentClassName}`}>{children}</div>
       </div>
     </div>,
     document.body,

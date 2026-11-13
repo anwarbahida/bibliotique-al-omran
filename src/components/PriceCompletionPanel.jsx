@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { CURRENCY } from '../config'
 import { formatDate, hasPrice, toDate } from '../lib/format'
 import { describeDataError, updateProduct } from '../lib/products'
+import PhotoLightbox from './PhotoLightbox'
 import ProductThumb from './ProductThumb'
 
 function PriceItem({ product, notify }) {
@@ -9,6 +10,7 @@ function PriceItem({ product, notify }) {
   const [name, setName] = useState(product.name || '')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const nameMissing = !(product.name || '').trim()
   const priced = hasPrice(product.price)
@@ -48,11 +50,30 @@ function PriceItem({ product, notify }) {
 
   return (
     <article className={`price-item ${priced ? '' : 'is-pending'}`}>
-      <ProductThumb
-        product={product}
-        alt={product.name || 'Produit sans nom'}
-        className="price-photo"
-      />
+      {product.photo ? (
+        <button
+          type="button"
+          className="price-photo-button"
+          onClick={() => setLightboxOpen(true)}
+          aria-label={`Agrandir la photo de ${product.name || 'ce produit'}`}
+          title="Voir la photo en plein écran"
+        >
+          <ProductThumb
+            product={product}
+            alt={product.name || 'Produit sans nom'}
+            className="price-photo"
+          />
+          <span className="price-photo-zoom" aria-hidden="true">
+            <i className="bi bi-arrows-fullscreen"></i>
+          </span>
+        </button>
+      ) : (
+        <ProductThumb
+          product={product}
+          alt={product.name || 'Produit sans nom'}
+          className="price-photo"
+        />
+      )}
 
       <div className="price-item-body min-w-0">
         {nameMissing ? (
@@ -124,6 +145,13 @@ function PriceItem({ product, notify }) {
           )}
         </button>
       </form>
+
+      <PhotoLightbox
+        open={lightboxOpen}
+        photo={product.photo}
+        name={product.name}
+        onClose={() => setLightboxOpen(false)}
+      />
     </article>
   )
 }
