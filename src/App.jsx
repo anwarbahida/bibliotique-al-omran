@@ -98,10 +98,7 @@ export default function App() {
               <div className="min-w-0">
                 <div className="d-flex flex-wrap align-items-center gap-2">
                   <h1 className="h3 fw-bold text-white mb-0">{APP_NAME}</h1>
-                  <span className={`mode-pill ${isFirestore ? 'mode-live' : 'mode-demo'}`}>
-                    <span className="mode-dot" aria-hidden="true"></span>
-                    {isFirestore ? 'Firestore connecté' : 'Démo locale'}
-                  </span>
+                  
                 </div>
                 <p className="header-subtitle mb-0">
                   Photos et inventaire · les prix sont complétés par l’équipe
