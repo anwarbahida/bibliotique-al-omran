@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ConfirmDeleteModal from './components/ConfirmDeleteModal'
+import FireworksLayer from './components/FireworksLayer'
 import PriceCompletionPanel from './components/PriceCompletionPanel'
 import ProductForm from './components/ProductForm'
 import ProductsPanel from './components/ProductsPanel'
@@ -91,7 +92,8 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <div className="container-xxl py-4 py-lg-5">
+        <FireworksLayer />
+        <div className="container-xxl app-header-content py-4 py-lg-5">
           <div className="d-flex flex-wrap align-items-center gap-3 gap-lg-4">
             <div className="brand">
               <div className="brand-badge" aria-hidden="true">

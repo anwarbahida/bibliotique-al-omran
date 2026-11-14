@@ -128,6 +128,8 @@ La collection est créée automatiquement au premier ajout de produit.
 - Modification et suppression avec confirmation.
 - Statistiques : nombre de produits et **produits à compléter**.
 - Notifications, états de chargement et messages d’erreur explicites.
+- Animation de feux d’artifice en fond d’en-tête, désactivée automatiquement si
+  l’utilisateur préfère réduire les animations.
 - Mode démo `localStorage` si Firebase n’est pas configuré.
 
 ---
@@ -142,6 +144,7 @@ src/
 ├── index.css                     # Thème et styles responsive
 ├── components/
 │   ├── ProductForm.jsx           # Saisie photo + informations (sans prix)
+│   ├── FireworksLayer.jsx        # Animation de feux d’artifice de l’en-tête
 │   ├── CameraModal.jsx           # Webcam / caméra en direct
 │   ├── PriceCompletionPanel.jsx  # Onglet de complétion des prix
 │   ├── PhotoLightbox.jsx         # Affichage de la photo en plein écran
@@ -202,6 +205,8 @@ npm run lint     # Oxlint
   produits ou configurez Firestore.
 - **Devise** : définissez `VITE_CURRENCY` (ex. `FCFA`, `€`, `DA`, `MAD`). Vide par défaut.
 - **Deux appareils** : sans Firestore, chaque navigateur a son propre inventaire local.
+- **Feux d’artifice** : `fireworks-js` est chargé à la demande depuis `esm.run`. Sans
+  connexion internet, l’en-tête et le reste de l’application continuent de fonctionner.
 
 ---
 

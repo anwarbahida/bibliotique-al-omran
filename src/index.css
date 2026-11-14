@@ -80,6 +80,23 @@ body {
   pointer-events: none;
 }
 
+.app-header-content {
+  position: relative;
+  z-index: 2;
+}
+
+.fireworks-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fireworks-layer canvas {
+  display: block;
+}
+
 .brand {
   display: flex;
   align-items: center;
