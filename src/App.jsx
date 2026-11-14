@@ -235,7 +235,6 @@ export default function App() {
       <footer className="container-xxl pb-4 text-center text-muted small">
         <span className="d-inline-flex flex-wrap align-items-center justify-content-center gap-2">
           <i className={`bi ${isFirestore ? 'bi-cloud-check' : 'bi-hdd'}`} aria-hidden="true"></i>
-          {isFirestore ? 'Données synchronisées avec Firestore' : 'Données stockées localement (démo)'}
           <span aria-hidden="true">·</span>
           <span>Photos compressées automatiquement</span>
         </span>
