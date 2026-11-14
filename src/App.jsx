@@ -9,6 +9,8 @@ import useProducts from './hooks/useProducts'
 import { createId, hasPrice } from './lib/format'
 import { deleteProduct, describeDataError, storageMode } from './lib/products'
 
+const CURRENT_YEAR = new Date().getFullYear()
+
 export default function App() {
   const { products, loading, error } = useProducts()
   const [activeTab, setActiveTab] = useState(() =>
@@ -232,12 +234,41 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="container-xxl pb-4 text-center text-muted small">
-        <span className="d-inline-flex flex-wrap align-items-center justify-content-center gap-2">
-          <i className={`bi ${isFirestore ? 'bi-cloud-check' : 'bi-hdd'}`} aria-hidden="true"></i>
-          <span aria-hidden="true">·</span>
-          <span>Photos compressées automatiquement</span>
-        </span>
+      <footer className="app-footer">
+        <div className="container-xxl">
+          <div className="app-footer-card">
+            <div className="app-footer-identity">
+              <span className="app-footer-logo" aria-hidden="true">
+                <i className="bi bi-collection-fill"></i>
+              </span>
+              <span className="min-w-0">
+                <span className="app-footer-title d-block">{APP_NAME}</span>
+                <span className="app-footer-subtitle d-block">Inventaire produits</span>
+              </span>
+            </div>
+
+            <span className="app-footer-sep" aria-hidden="true"></span>
+
+            <p className="app-footer-author mb-0">
+              <span className="app-footer-label d-block">By</span>
+              <span className="app-footer-name">Anwar Bahida</span>
+            </p>
+
+            <a
+              className="app-footer-phone"
+              href="tel:+212602537570"
+              aria-label="Appeler Anwar Bahida au +212 602 537 570"
+            >
+              <i className="bi bi-telephone-fill" aria-hidden="true"></i>
+              <span>+212 602 537 570</span>
+            </a>
+          </div>
+
+          <p className="app-footer-copy mb-0">
+            <i className="bi bi-shield-check me-1" aria-hidden="true"></i>
+            © {CURRENT_YEAR} {APP_NAME} — Tous droits réservés
+          </p>
+        </div>
       </footer>
 
       <ConfirmDeleteModal
