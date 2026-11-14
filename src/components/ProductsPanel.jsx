@@ -5,7 +5,8 @@ import { describeDataError } from '../lib/products'
 import ProductCard from './ProductCard'
 import ProductTable from './ProductTable'
 
-const PAGE_SIZE = 10
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50, 100]
+const DEFAULT_PAGE_SIZE = 10
 
 const SORT_OPTIONS = [
   { value: 'recent', label: 'Plus récents' },
@@ -96,6 +97,7 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const isDesktop = useMediaQuery('(min-width: 992px)')
 
   const filteredProducts = useMemo(() => {
@@ -109,12 +111,12 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
     return sortProducts(filtered, sort)
   }, [products, search, sort])
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE))
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize))
   const currentPage = Math.min(page, totalPages)
   const pageProducts = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE
-    return filteredProducts.slice(start, start + PAGE_SIZE)
-  }, [currentPage, filteredProducts])
+    const start = (currentPage - 1) * pageSize
+    return filteredProducts.slice(start, start + pageSize)
+  }, [currentPage, filteredProducts, pageSize])
 
   function resetFilters() {
     setSearch('')
@@ -146,7 +148,7 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
       </div>
 
       <div className="row g-2 mb-3">
-        <div className="col-12 col-md-8">
+        <div className="col-12 col-md-6">
           <div className="search-field">
             <i className="bi bi-search search-icon" aria-hidden="true"></i>
             <input
@@ -176,7 +178,7 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
           </div>
         </div>
 
-        <div className="col-12 col-md-4">
+        <div className="col-6 col-md-3">
           <select
             className="form-select"
             aria-label="Trier les produits"
@@ -188,6 +190,23 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="col-6 col-md-3">
+          <select
+            className="form-select"
+            aria-label="Nombre de lignes par page"
+            title="Nombre de lignes par page"
+            value={pageSize}
+            onChange={(event) => {
+              setPageSize(Number(event.target.value))
+              setPage(1)
+            }}
+          >
+            {PAGE_SIZE_OPTIONS.map((size) => (
+              <option key={size} value={size}>{size} / page</option>
             ))}
           </select>
         </div>

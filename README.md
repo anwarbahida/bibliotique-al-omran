@@ -123,7 +123,8 @@ La collection est créée automatiquement au premier ajout de produit.
 - Inventaire en temps réel grâce à `onSnapshot`.
 - Tableau sur ordinateur, cartes sur mobile (100 % responsive).
 - Recherche par nom et tri (récents, nom, prix).
-- Pagination de l’inventaire : **10 produits par page** (tableau et cartes).
+- Pagination de l’inventaire : **10 produits par page par défaut**, avec choix du
+  nombre de lignes (5, 10, 20, 50 ou 100) pour le tableau et les cartes.
 - Modification et suppression avec confirmation.
 - Statistiques : nombre de produits et **produits à compléter**.
 - Notifications, états de chargement et messages d’erreur explicites.
