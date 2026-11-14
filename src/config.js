@@ -1,4 +1,4 @@
-export const APP_NAME = 'Biblio Al Omran'
+export const APP_NAME = 'Biblio Imran'
 
 export const CURRENCY = (import.meta.env.VITE_CURRENCY || '').trim()
 
