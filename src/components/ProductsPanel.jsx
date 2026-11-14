@@ -5,12 +5,36 @@ import { describeDataError } from '../lib/products'
 import ProductCard from './ProductCard'
 import ProductTable from './ProductTable'
 
+const PAGE_SIZE = 10
+
 const SORT_OPTIONS = [
   { value: 'recent', label: 'Plus récents' },
   { value: 'name', label: 'Nom (A → Z)' },
   { value: 'price-desc', label: 'Prix décroissant' },
   { value: 'price-asc', label: 'Prix croissant' },
 ]
+
+function getPageNumbers(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1)
+
+  const pages = new Set([1, total, current - 1, current, current + 1])
+  if (current <= 3) [2, 3, 4].forEach((page) => pages.add(page))
+  if (current >= total - 2) [total - 3, total - 2, total - 1].forEach((page) => pages.add(page))
+
+  const sorted = [...pages]
+    .filter((page) => page >= 1 && page <= total)
+    .sort((a, b) => a - b)
+  const items = []
+  let previous = 0
+
+  sorted.forEach((page) => {
+    if (page - previous > 1) items.push(`gap-${page}`)
+    items.push(page)
+    previous = page
+  })
+
+  return items
+}
 
 function EmptyState({ hasProducts, onReset }) {
   if (hasProducts) {
@@ -71,6 +95,7 @@ function sortProducts(products, sort) {
 export default function ProductsPanel({ products, loading, error, onEdit, onDelete }) {
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('recent')
+  const [page, setPage] = useState(1)
   const isDesktop = useMediaQuery('(min-width: 992px)')
 
   const filteredProducts = useMemo(() => {
@@ -84,9 +109,17 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
     return sortProducts(filtered, sort)
   }, [products, search, sort])
 
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageProducts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE
+    return filteredProducts.slice(start, start + PAGE_SIZE)
+  }, [currentPage, filteredProducts])
+
   function resetFilters() {
     setSearch('')
     setSort('recent')
+    setPage(1)
   }
 
   const showLoading = loading && products.length === 0
@@ -122,13 +155,19 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
               placeholder="Rechercher un produit…"
               aria-label="Rechercher un produit"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) => {
+                setSearch(event.target.value)
+                setPage(1)
+              }}
             />
             {search && (
               <button
                 type="button"
                 className="search-clear"
-                onClick={() => setSearch('')}
+                onClick={() => {
+                  setSearch('')
+                  setPage(1)
+                }}
                 aria-label="Effacer la recherche"
               >
                 <i className="bi bi-x-circle-fill" aria-hidden="true"></i>
@@ -142,7 +181,10 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
             className="form-select"
             aria-label="Trier les produits"
             value={sort}
-            onChange={(event) => setSort(event.target.value)}
+            onChange={(event) => {
+              setSort(event.target.value)
+              setPage(1)
+            }}
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>{option.label}</option>
@@ -169,13 +211,67 @@ export default function ProductsPanel({ products, loading, error, onEdit, onDele
       ) : showEmpty ? (
         <EmptyState hasProducts={products.length > 0} onReset={resetFilters} />
       ) : isDesktop ? (
-        <ProductTable products={filteredProducts} onEdit={onEdit} onDelete={onDelete} />
+        <ProductTable products={pageProducts} onEdit={onEdit} onDelete={onDelete} />
       ) : (
         <div className="row g-3">
-          {filteredProducts.map((product) => (
+          {pageProducts.map((product) => (
             <ProductCard key={product.id} product={product} onEdit={onEdit} onDelete={onDelete} />
           ))}
         </div>
+      )}
+
+      {!showLoading && !showEmpty && totalPages > 1 && (
+        <nav className="inventory-pagination" aria-label="Pagination de l’inventaire">
+          <p className="small text-muted mb-0">
+            Page {currentPage} sur {totalPages} · {filteredProducts.length} produits
+          </p>
+
+          <ul className="pagination pagination-sm mb-0">
+            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+              <button
+                type="button"
+                className="page-link"
+                onClick={() => setPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                aria-label="Page précédente"
+              >
+                <i className="bi bi-chevron-left" aria-hidden="true"></i>
+              </button>
+            </li>
+
+            {getPageNumbers(currentPage, totalPages).map((item) =>
+              typeof item === 'number' ? (
+                <li key={item} className={`page-item ${item === currentPage ? 'active' : ''}`}>
+                  <button
+                    type="button"
+                    className="page-link"
+                    onClick={() => setPage(item)}
+                    aria-current={item === currentPage ? 'page' : undefined}
+                    aria-label={`Page ${item}`}
+                  >
+                    {item}
+                  </button>
+                </li>
+              ) : (
+                <li key={item} className="page-item disabled">
+                  <span className="page-link">…</span>
+                </li>
+              ),
+            )}
+
+            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+              <button
+                type="button"
+                className="page-link"
+                onClick={() => setPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                aria-label="Page suivante"
+              >
+                <i className="bi bi-chevron-right" aria-hidden="true"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
       )}
     </section>
   )

@@ -524,6 +524,46 @@ textarea.form-control {
   border-bottom: 0;
 }
 
+.inventory-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+.inventory-pagination .page-link {
+  min-width: 34px;
+  color: var(--brand-800);
+  text-align: center;
+  border-color: var(--line);
+}
+
+.inventory-pagination .page-link:hover {
+  color: var(--brand-900);
+  background: var(--brand-50);
+  border-color: #ccfbf1;
+}
+
+.inventory-pagination .page-item.active .page-link {
+  color: #fff;
+  background: var(--brand-700);
+  border-color: var(--brand-700);
+}
+
+.inventory-pagination .page-item.disabled .page-link {
+  color: #94a3b8;
+  background: #f8fafc;
+  border-color: var(--line);
+}
+
+.inventory-pagination .page-link:focus {
+  box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.15);
+}
+
 .thumb-sm {
   flex-shrink: 0;
   width: 52px;
